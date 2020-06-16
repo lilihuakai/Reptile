@@ -8,6 +8,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+# 无头模式
+# options = webdriver.FirefoxOptions()
+# options.add_argument('-headless')
+# browser = webdriver.Firefox(firefox_options=options)
+# Chrome_options = webdriver.ChromeOptions()
+# Chrome_options.add_argument('-headless')
+# browser = webdriver.Chrome(chrome_options=Chrome_options)
 browser = webdriver.Firefox()
 # browser = webdriver.Chrome()
 
