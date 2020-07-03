@@ -83,16 +83,16 @@ class Spider(object):
         param response: 响应
         return: 新的响应
         """
-        doc = pq(response)
+        doc = pq(response.text)
         items = doc('.news-box .news-list li .txt-box h3 a').items()
         for item in items:
-            url = item.attr('href')
-            weixin_request = WeiXinRequest(url=start_url, callback=self.parse_detail)
+            url = "http://weixin.sogou.com" + item.attr('href')
+            weixin_request = WeiXinRequest(url=url, callback=self.parse_detail)
             yield weixin_request
         next_page = doc('#sogou_next').attr('href')
         if next_page:
             url = self.base_url + str(next_page)
-            weixin_request = WeiXinRequest(url=url, callback=self.parse_index, need_proxy=False)
+            weixin_request = WeiXinRequest(url=url, callback=self.parse_index, need_proxy=True)
             yield weixin_request
 
     def start(self):
@@ -102,7 +102,7 @@ class Spider(object):
         # 全局更新headers
         self.session.headers.update(self.headers)
         start_url = self.base_url + '?' + urlencode({'query': self.keyword, 'type': 2})
-        weixin_request = WeiXinRequest(url=start_url, callback=self.parse_index, need_proxy=False)
+        weixin_request = WeiXinRequest(url=start_url, callback=self.parse_index, need_proxy=True)
         # 调度第一个请求
         self.queue.add(weixin_request)
 
@@ -154,7 +154,7 @@ class Spider(object):
                 if results:
                     for result in results:
                         print("New Result", type(result))
-                        if isinstance(result, weixin_request):
+                        if isinstance(result, WeiXinRequest):
                             self.queue.add(result)
                         else:
                             self.mysql.insert('articles', result)
